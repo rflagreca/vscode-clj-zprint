@@ -3,6 +3,7 @@
     "displayName": "vscode-clj-zprint",
     "description": "Wrapper for clj-zprint.",
     "version": "0.0.1",
+    "publisher": "rflagreca",
     "engines": {
         "vscode": "^1.51.0"
     },
@@ -21,6 +22,7 @@
         "test": "node ./test/runTest.js",
         "compile": "yarn run shadow-cljs compile :extension",
         "watch": "yarn run shadow-cljs watch :extension",
+        "release": "yarn run shadow-cljs release :extension",
         "clean": "rm -rf .shadow-cljs/"
     },
     "devDependencies": {
