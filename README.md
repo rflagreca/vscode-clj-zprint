@@ -4,7 +4,7 @@ A VS Code wrapper for [clj-zprint](https://github.com/kkinnear/zprint) written i
 
 ## Configuration
 
-Looks for a `.zprintrc` file in the current directory and uses that for configuration.  If not found, `zprint` defaults will be used.  Granular, in-editor configuration to be considered for future versions.
+First, we look for a `.zprintrc` file in the current workspace and uses that for configuration.  If not found, then we look in the user's home directory.  Finally, `zprint` defaults will be used if no configuration file is found.  Granular, in-editor configuration to be considered for future versions.
 
 ## Disclaimer
 
