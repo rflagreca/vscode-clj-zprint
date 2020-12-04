@@ -4,6 +4,7 @@
     "description": "Wrapper for clj-zprint.",
     "version": "0.0.1",
     "publisher": "rflagreca",
+    "repository": "https://github.com/rflagreca/vscode-clj-zprint",
     "engines": {
         "vscode": "^1.51.0"
     },
