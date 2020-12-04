@@ -1,10 +1,11 @@
 {
-  "name": "vscode-clj-zprint",
+    "name": "vscode-clj-zprint",
     "displayName": "vscode-clj-zprint",
     "description": "Wrapper for clj-zprint.",
     "version": "0.0.1",
     "publisher": "rflagreca",
     "repository": "https://github.com/rflagreca/vscode-clj-zprint",
+    "license": "GPL-3.0-or-later",
     "engines": {
         "vscode": "^1.51.0"
     },
@@ -21,10 +22,12 @@
         "lint": "eslint .",
         "pretest": "yarn run lint",
         "test": "node ./test/runTest.js",
+        "clean": "rm -rf .shadow-cljs/ && rm extension.js",
         "compile": "yarn run shadow-cljs compile :extension",
         "watch": "yarn run shadow-cljs watch :extension",
-        "release": "yarn run shadow-cljs release :extension",
-        "clean": "rm -rf .shadow-cljs/"
+        "release": "yarn run clean && yarn run shadow-cljs release :extension",
+        "package": "yarn run release && vsce package",
+        "publish": "yarn run clean && vsce publish"
     },
     "devDependencies": {
         "@types/vscode": "^1.51.0",
