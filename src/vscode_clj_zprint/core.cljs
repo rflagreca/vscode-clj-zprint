@@ -7,36 +7,46 @@
 
 (defn slurp
   [file]
-  (->
-    (.readFileSync fs file "utf8")
-    (.toString)))
+  (-> (.readFileSync fs file "utf8")
+      (.toString)))
 
 (defn get-zprintrc-file-str
   []
-  (let [home-str (.homedir os)
-        workspace-zprintrc-file-str (str (.. (first vscode/workspace.workspaceFolders) -uri -fsPath) "/.zprintrc")
-        global-zprintrc-file-str (str home-str "/.zprintrc")]
+  (let [home-str                     (.homedir os)
+        workspace-zprintrc-file-str  (str
+                                      (.. (first
+                                           vscode/workspace.workspaceFolders)
+                                          -uri
+                                          -fsPath)
+                                      "/.zprintrc")
+        global-zprintrc-file-str     (str home-str "/.zprintrc")
+        workspace-zprintedn-file-str (str
+                                      (.. (first
+                                           vscode/workspace.workspaceFolders)
+                                          -uri
+                                          -fsPath)
+                                      "/.zprint.edn")
+        global-zprintedn-file-str    (str home-str "/.zprint.edn")]
     (cond
-      (.existsSync fs workspace-zprintrc-file-str) workspace-zprintrc-file-str
-      (.existsSync fs global-zprintrc-file-str) global-zprintrc-file-str
-      :else nil)))
+      (.existsSync fs workspace-zprintrc-file-str)  workspace-zprintrc-file-str
+      (.existsSync fs global-zprintrc-file-str)     global-zprintrc-file-str
+      (.existsSync fs workspace-zprintedn-file-str) workspace-zprintedn-file-str
+      (.existsSync fs global-zprintedn-file-str)    global-zprintedn-file-str)))
 
 (defn get-config!
   []
-  (let [zprintrc-file-str (get-zprintrc-file-str)]
-    (try
-      (when zprintrc-file-str
-        (let [zprintrc-str (slurp zprintrc-file-str)]
-          (when zprintrc-str (reader/read-string zprintrc-str))))
-      (catch :default _ {}))))
+  (try (when-let [zprintrc-file-str (get-zprintrc-file-str)]
+         (when-let [zprintrc-str (slurp zprintrc-file-str)]
+           (reader/read-string zprintrc-str)))
+       (catch :default _ {})))
 
 (deftype ClojureDocumentRangeFormattingEditProvider [config]
  Object
    (provideDocumentRangeFormattingEdits [_ ^js document range options token]
-     (let [text       (.getText document range)
-           path vscode/window.activeTextEditor.document.uri.fsPath
+     (let [text      (.getText document range)
+           path      vscode/window.activeTextEditor.document.uri.fsPath
            formatted (try (zprint/zprint-file-str text path config)
-                                (catch js/Error e (js/console.log (.-message e))))]
+                          (catch js/Error e (js/console.log (.-message e))))]
        (when formatted #js [(vscode/TextEdit.replace range formatted)]))))
 
 (defn register-disposable
