@@ -1,4 +1,4 @@
-{:dependencies [[zprint "1.2.1"]]
+{:dependencies [[zprint "1.2.2"]]
 
  :source-paths ["src"]
 
