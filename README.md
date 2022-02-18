@@ -1,6 +1,6 @@
 # vscode-clj-zprint
 
-A VS Code wrapper for [clj-zprint](https://github.com/kkinnear/zprint) written in `cljs`, built with [Shadow CLJS](http://shadow-cljs.org/).
+A VS Code wrapper for [zprint](https://github.com/kkinnear/zprint) written in `cljs`, built with [Shadow CLJS](http://shadow-cljs.org/).
 
 ## Configuration
 
