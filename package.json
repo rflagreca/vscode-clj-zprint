@@ -2,7 +2,7 @@
     "name": "vscode-clj-zprint",
     "displayName": "vscode-clj-zprint",
     "description": "Wrapper for clj-zprint to format Clojure code.",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "publisher": "rflagreca",
     "repository": "https://github.com/rflagreca/vscode-clj-zprint",
     "license": "GPL-3.0-or-later",
@@ -13,10 +13,84 @@
         "Formatters"
     ],
     "activationEvents": [
-        "onLanguage:clojure"
+        "onLanguage:clojure",
+        "onCommand:vscode-clj-zprint.refresh",
+        "onCommand:vscode-clj-zprint.currentconfig"
     ],
     "main": "./extension.js",
     "contributes": {
+        "commands": [
+            {
+              "command": "vscode-clj-zprint.refresh",
+              "title": "Zprint: Refresh Configuration"
+            },
+            
+            {
+              "command": "vscode-clj-zprint.currentconfig",
+              "title": "Zprint: Output Current non-Default Configuration"
+            }
+          ],
+        "menus": {
+            "commandPalette": [
+              {
+                "command": "vscode-clj-zprint.refresh",
+                "when": "editorLangId == clojure"
+              },
+              
+              {
+                "command": "vscode-clj-zprint.currentconfig",
+                "when": "editorLangId == clojure"
+              }
+
+            ]
+        },
+        
+        "configuration": {
+            "title": "Zprint",
+            "properties": {
+              "vscode-clj-zprint.width": {
+                "type": "string",
+                "default": null,
+                "description": "Width to format code. If no value, ignored."
+              },
+            
+              "vscode-clj-zprint.Styles.ArrayOfStyles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "default": null,
+                "description": "Specify styles, which will be applied in the order given."
+              },
+              
+              "vscode-clj-zprint.Styles.UseOnlyTheseStyles": {
+                "type": "boolean",
+                "default": false,
+                "markdownDescription": "Ignore any `:style` configured in external files and use only the styles specified in the `Array Of Styles`.  `Community Formatting` will be ignored, as will any `:style` in the `Option Map`."
+              },
+
+              "vscode-clj-zprint.CommunityFormatting": {
+                "type": "boolean",
+                "default": false,
+                "markdownDescription": "Use community formatting approach.  Adds the `:community` style."
+              },
+              
+              "vscode-clj-zprint.IgnoreExternalFiles": {
+                "type": "boolean",
+                "default": false,
+                "markdownDescription": "Do not read any `.zprintrc` or `.zprint.edn` files."
+              },
+
+              "vscode-clj-zprint.OptionsMap": {
+                "type": "string",
+                "editPresentation": "multilineText",
+                "default": null,
+                "description": "Enter a properly formatted options map. It will be applied after all other configuration."
+              }
+
+           }
+
+        }
     },
     "scripts": {
         "lint": "eslint .",
