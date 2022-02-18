@@ -1,5 +1,9 @@
 # Change Log
 
+## v0.0.4
+
+- Update `README.md` and `package.json` description
+
 ## v0.0.3
 
 - Follows zprint interpretation of `.zprintrc` and `.zprint.edn` files as closely as possible.
