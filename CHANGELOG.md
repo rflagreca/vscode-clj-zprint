@@ -1,5 +1,9 @@
 # Change Log
 
+## v0.0.5
+
+- Bump zprint to 1.2.4
+
 ## v0.0.4
 
 - Update `README.md` and `package.json` description
