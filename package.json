@@ -85,7 +85,7 @@
     "lint": "eslint .",
     "pretest": "yarn run lint",
     "test": "node ./test/runTest.js",
-    "clean": "rm -rf .shadow-cljs/ && rm extension.js",
+    "clean": "rm -rf .shadow-cljs/ && rm -f extension.js",
     "compile": "yarn run shadow-cljs compile :extension",
     "watch": "yarn run shadow-cljs watch :extension",
     "release": "yarn run clean && yarn run shadow-cljs release :extension",
