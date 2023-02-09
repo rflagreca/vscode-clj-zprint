@@ -357,7 +357,7 @@
      ; Do this if we have a vscode config change or if someone forces us to do it anyway
      (when (or new-map vscode-errors force-update?)
        ; Remove current configuration
-       (zprint.config/config-configure-all!)
+       (zprint.config/protected-configure-all!)
        (when @configured? (output-message "Removed existing zprint configuration."))
        (let [external-errors (if ignore-external-files?
                                (output-message

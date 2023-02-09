@@ -89,7 +89,8 @@
     "compile": "yarn run shadow-cljs compile :extension",
     "watch": "yarn run shadow-cljs watch :extension",
     "release": "yarn run clean && yarn run shadow-cljs release :extension",
-    "package": "yarn run release && vsce package"
+    "package": "yarn run release && vsce package",
+    "package_debug": "yarn run clean && yarn run shadow-cljs compile :extension && vsce package"
   },
   "devDependencies": {
     "@types/vscode": "^1.51.0",
