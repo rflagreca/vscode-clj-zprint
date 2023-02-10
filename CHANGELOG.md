@@ -1,5 +1,13 @@
 # Change Log
 
+## v0.0.7
+
+- Bump zprint to 1.2.5
+
+## v0.0.6
+
+- Rolls back zprint due to startup issues
+
 ## v0.0.5
 
 - Bump zprint to 1.2.4
