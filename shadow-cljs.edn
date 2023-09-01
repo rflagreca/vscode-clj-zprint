@@ -1,8 +1,9 @@
-{:dependencies [[zprint "1.2.5"]]
+{:dependencies [[zprint "1.2.7"]]
 
  :source-paths ["src"]
 
  :builds       {:extension {:target    :node-library
                             :exports   {:activate
                                         vscode-clj-zprint.core/activate}
-                            :output-to "extension.js"}}}
+                            :output-to "extension.js"
+                            :compiler-options {:optimizations :simple}}}}
