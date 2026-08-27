@@ -257,17 +257,32 @@
 ; VS Code configuration functions
 
 (defn create-style-vec
-  "Given a string with a comma separated set of styles, create
-   a vector with each style as a separate keyword. Returns
-   [style-vec errors] where only one of them is non-nil."
-  [style-str]
-  (let [split-vec (clojure.string/split style-str #"\,")
-        replaced (apply str (interpose " " split-vec))
-        style-vec-str (str "[" replaced "]")
-        keyword-vec (clojure.edn/read-string style-vec-str)]
-    (if (some false? (mapv keyword? keyword-vec))
-      [nil (str "Some of these styles in the 'Array of Styles' are not keywords: '" style-str "'")]
-      [keyword-vec nil])))
+  "Given a sequence of style-name strings from the 'Array of Styles'
+   setting (or a comma separated string, for back compatibility),
+   create a vector with each style as a separate keyword. Returns
+   [style-vec errors] where only one of them is non-nil. A nil or
+   empty setting yields [[] nil]."
+  [styles]
+  (let [style-strs (cond (nil? styles) []
+                         (string? styles) (clojure.string/split styles #"\,")
+                         (sequential? styles) styles
+                         :else ::invalid)]
+    (if (= style-strs ::invalid)
+      [nil
+       (str "The 'Array of Styles' must be an array of style names, found: '"
+            (pr-str styles)
+            "'")]
+      (if (every? string? style-strs)
+        [(->> style-strs
+              (map clojure.string/trim)
+              (remove empty?)
+              (mapv #(keyword (clojure.string/replace % #"^:" ""))))
+         nil]
+        [nil
+         (str "Some of these styles in the 'Array of Styles' are not "
+              "style names: '"
+              (pr-str styles)
+              "'")]))))
 
 (defn build-vscode-options-map
   "Given the config-map, create and save a new vscode-options-map.
@@ -316,15 +331,20 @@
   be output, and no map will be returned.  
   Returns [new-map config-map remove-style? ignore-external-files? errors]"
   []
-  (let [configuration (vscode/workspace.getConfiguration "vscode-clj-zprint")
+  (let [^js configuration (vscode/workspace.getConfiguration "vscode-clj-zprint")
         ; Entire configuration as map, not a valid options map
-        ; Data types are ???
-        config-map {:width configuration.width,
-                    :array-of-styles configuration.Styles.ArrayOfStyles,
-                    :options-map configuration.OptionsMap,
-                    :use-only-these-styles configuration.Styles.UseOnlyTheseStyles,
-                    :community-formatting configuration.CommunityFormatting,
-                    :ignore-external-files configuration.IgnoreExternalFiles}
+        config-map {:width (.get configuration "width"),
+                    ; js->clj so styles arrive as a Clojure vector and the
+                    ; change-detection below compares by value, not identity
+                    :array-of-styles (js->clj (.get configuration
+                                                    "Styles.ArrayOfStyles")),
+                    :options-map (.get configuration "OptionsMap"),
+                    :use-only-these-styles (.get configuration
+                                                 "Styles.UseOnlyTheseStyles"),
+                    :community-formatting (.get configuration
+                                                "CommunityFormatting"),
+                    :ignore-external-files (.get configuration
+                                                 "IgnoreExternalFiles")}
         remove-style? (:use-only-these-styles config-map)
         ignore-external-files? (:ignore-external-files config-map)]
     ; Have any of the configuration elements changed since we last came through?
@@ -412,7 +432,7 @@
             end-line range.end.line
             ; The API docs say not to use fsPath for display purposes
             ; so we will use path instead
-            path vscode/window.activeTextEditor.document.uri.path
+            path (.. ^js document -uri -path)
             [zprint-range formatted]
               (try
                 (zprint/zprint-file-str text
